@@ -5781,6 +5781,11 @@ void RemoveAugCmd(PlayerClient* pChar, const char* szLine)
 				}
 				else
 				{
+					if (!strcmp("Wastingtime", GetServerShortName()))
+					{
+						itemDis->RemoveAugmentRequest(foundAugment.GetDeepestSlot());
+						return;
+					}
 					// The augment cannot be removed because your inventory does not contain the required solvent.
 					WriteChatf("\ay%s", pStringTable->getString(5474));
 				}
