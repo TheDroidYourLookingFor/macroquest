@@ -327,3 +327,7 @@
 [submodule "plugins/MQ2RWarp"]
 	path = plugins/MQ2RWarp
 	url = https://github.com/TheDroidYourLookingFor/MQ2RWarp.git
+[submodule "plugins/MQ2AdvPath"]
+	path = plugins/MQ2AdvPath
+	url = https://github.com/RedGuides/MQ2AdvPath.git
+	branch = master
