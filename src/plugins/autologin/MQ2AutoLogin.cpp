@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  */
 
-// For list of changes, see CHANGELOG.md
+ // For list of changes, see CHANGELOG.md
 
 #include <mq/Plugin.h>
 
@@ -57,6 +57,11 @@ public:
 		CustomCharacterIni,
 	};
 
+	enum class LoginProfileMethods
+	{
+		ReRun,
+	};
+
 	LoginProfileType() : MQ2Type("LoginProfile")
 	{
 		ScopedTypeMember(LoginProfileMembers, HotKey);
@@ -67,16 +72,28 @@ public:
 		ScopedTypeMember(LoginProfileMembers, Class);
 		ScopedTypeMember(LoginProfileMembers, Level);
 		ScopedTypeMember(LoginProfileMembers, CustomCharacterIni);
+		ScopedTypeMethod(LoginProfileMethods, ReRun);
 	}
 
 	virtual bool GetMember(MQVarPtr VarPtr, const char* Member, char* Index, MQTypeVar& Dest) override
 	{
-		MQTypeMember* pMember = FindMember(Member);
-		if (!pMember)
-			return false;
-
 		std::shared_ptr<ProfileRecord> record = Login::get_current_record();
 		if (!record)
+			return false;
+
+		MQTypeMember* pMethod = LoginProfileType::FindMethod(Member);
+		if (pMethod)
+		{
+			switch (static_cast<LoginProfileMethods>(pMethod->ID))
+			{
+				case LoginProfileMethods::ReRun:Login::dispatch(SetLoginProfile(*record));
+					return true;
+				default: break;
+			}
+			return false;
+		}
+		MQTypeMember* pMember = FindMember(Member);
+		if (!pMember)
 			return false;
 
 		switch (static_cast<LoginProfileMembers>(pMember->ID))
@@ -679,7 +696,7 @@ class LoginServer_Hook
 {
 public:
 	DETOUR_TRAMPOLINE_DEF(unsigned int, JoinServer_Trampoline, (int, void*, int))
-	unsigned int JoinServer_Detour(int serverID, void* userdata, int timeoutseconds)
+		unsigned int JoinServer_Detour(int serverID, void* userdata, int timeoutseconds)
 	{
 		// if someone uses the everquest patcher instead of launching with the patchme option,
 		// Account isn't correct and Password is empty, so make sure to test for an empty
@@ -800,7 +817,7 @@ PLUGIN_API void SetGameState(int GameState)
 		Login::m_currentLogin.reset();
 	}
 
-	if (GameState == GAMESTATE_INGAME )
+	if (GameState == GAMESTATE_INGAME)
 	{
 		if (const std::shared_ptr<ProfileRecord>& currentRecord = Login::get_current_record())
 		{
@@ -919,13 +936,13 @@ PLUGIN_API void InitializePlugin()
 	if (const auto custom_client_ini = login::db::ReadSetting("custom_client_ini");
 		custom_client_ini && GetBoolFromString(*custom_client_ini, false))
 	{
-		uintptr_t pfnGetPrivateProfileIntA = (uintptr_t)&::GetPrivateProfileIntA;
+		uintptr_t pfnGetPrivateProfileIntA = (uintptr_t) & ::GetPrivateProfileIntA;
 		EzDetour(pfnGetPrivateProfileIntA, GetPrivateProfileIntA_Detour, GetPrivateProfileIntA_Tramp);
 
-		uintptr_t pfnGetPrivateProfileStringA = (uintptr_t)&::GetPrivateProfileStringA;
+		uintptr_t pfnGetPrivateProfileStringA = (uintptr_t) & ::GetPrivateProfileStringA;
 		EzDetour(pfnGetPrivateProfileStringA, GetPrivateProfileStringA_Detour, GetPrivateProfileStringA_Trampoline);
 
-		uintptr_t pfnWritePrivateProfileStringA = (uintptr_t)&::WritePrivateProfileStringA;
+		uintptr_t pfnWritePrivateProfileStringA = (uintptr_t) & ::WritePrivateProfileStringA;
 		EzDetour(pfnWritePrivateProfileStringA, WritePrivateProfileStringA_Detour, WritePrivateProfileStringA_Trampoline);
 	}
 
@@ -1141,10 +1158,10 @@ PLUGIN_API void OnPulse()
 					{ "Do you accept these rules?",
 					  "CD_Yes_Button", },
 
-					// It took %1 seconds to load your characters, it is possible one or more failed to load.
-					// Please contact Customer Service if one of your characters is missing.
-					{ "Please contact Customer Service if one of your characters is missing.",
-					  "CD_OK_Button", },
+					  // It took %1 seconds to load your characters, it is possible one or more failed to load.
+					  // Please contact Customer Service if one of your characters is missing.
+					  { "Please contact Customer Service if one of your characters is missing.",
+						"CD_OK_Button", },
 				};
 
 				CXStr messageText = GetSTMLText(pStmlWnd);
@@ -1220,7 +1237,7 @@ static bool s_showServerList = false;
 
 static bool InputInt(const char* label, int* v, int step = 1, int step_fast = 10, ImGuiInputTextFlags flags = 0)
 {
-	return ImGui::InputScalar(label, ImGuiDataType_U32, (void*)v, (void*)(step>0 ? &step : NULL), (void*)(step_fast>0 ? &step_fast : NULL), "%d", flags);
+	return ImGui::InputScalar(label, ImGuiDataType_U32, (void*)v, (void*)(step > 0 ? &step : NULL), (void*)(step_fast > 0 ? &step_fast : NULL), "%d", flags);
 }
 
 static void DisplayProfileInfo(const std::shared_ptr<ProfileRecord>& profile, bool allowClear)
@@ -1380,7 +1397,7 @@ static void ShowAutoLoginOverlay(bool* p_open)
 
 	ImGui::SetNextWindowSizeConstraints(ImVec2(250, 0), ImVec2(FLT_MAX, FLT_MAX));
 	ImGui::SetNextWindowBgAlpha(gameState == GAMESTATE_CHARSELECT || gameState == GAMESTATE_INGAME ? .85f : .35f); // Transparent background
-	if (ImGui::Begin("AutoLogin Status", p_open, (corner != -1 ? ImGuiWindowFlags_NoMove : 0) | ImGuiWindowFlags_NoBringToFrontOnFocus  | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
+	if (ImGui::Begin("AutoLogin Status", p_open, (corner != -1 ? ImGuiWindowFlags_NoMove : 0) | ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoNav))
 	{
 		ImGui::PushFont(imgui::LargeTextFont);
 		ImGui::TextColored(ImColor(52, 152, 219), "AutoLogin Status");
@@ -1513,17 +1530,17 @@ static void ShowAutoLoginOverlay(bool* p_open)
 			ImGui::Text("Last State:"); ImGui::SameLine();
 			switch (Login::last_state())
 			{
-				case LoginState::SplashScreen: ImGui::Text("SplashScreen"); break;
-				case LoginState::Connect: ImGui::Text("Connect"); break;
-				case LoginState::ConnectConfirm: ImGui::Text("ConnectConfirm"); break;
-				case LoginState::ServerSelect: ImGui::Text("ServerSelect"); break;
-				case LoginState::ServerSelectConfirm: ImGui::Text("ServerSelectConfirm"); break;
-				case LoginState::ServerSelectKick: ImGui::Text("ServerSelectKick"); break;
-				case LoginState::ServerSelectDown: ImGui::Text("ServerSelectDown"); break;
-				case LoginState::CharacterSelect: ImGui::Text("CharacterSelect"); break;
-				case LoginState::InGame: ImGui::Text("InGame"); break;
-				case LoginState::InGameCamping: ImGui::Text("InGameCamping"); break;
-				default: ImGui::Text(""); break;
+			case LoginState::SplashScreen: ImGui::Text("SplashScreen"); break;
+			case LoginState::Connect: ImGui::Text("Connect"); break;
+			case LoginState::ConnectConfirm: ImGui::Text("ConnectConfirm"); break;
+			case LoginState::ServerSelect: ImGui::Text("ServerSelect"); break;
+			case LoginState::ServerSelectConfirm: ImGui::Text("ServerSelectConfirm"); break;
+			case LoginState::ServerSelectKick: ImGui::Text("ServerSelectKick"); break;
+			case LoginState::ServerSelectDown: ImGui::Text("ServerSelectDown"); break;
+			case LoginState::CharacterSelect: ImGui::Text("CharacterSelect"); break;
+			case LoginState::InGame: ImGui::Text("InGame"); break;
+			case LoginState::InGameCamping: ImGui::Text("InGameCamping"); break;
+			default: ImGui::Text(""); break;
 			}
 
 			if (Login::current_window() != nullptr && Login::current_window()->GetXMLData() != nullptr)
@@ -1549,7 +1566,7 @@ static void ShowAutoLoginOverlay(bool* p_open)
 
 static void ShowServerList(bool* p_open)
 {
-	if (!g_pLoginClient )
+	if (!g_pLoginClient)
 		return;
 
 	if (ImGui::Begin("Server List", p_open, 0))
@@ -1589,6 +1606,7 @@ static void ShowServerList(bool* p_open)
 				ImGui::TableNextColumn();
 				ImGui::Text("%s", server->Expansion > 0 && server->Expansion <= NUM_EXPANSIONS ? szExpansions[server->Expansion - 1] : "");
 
+				ImGui::TableNextColumn();
 				ImGui::TableNextColumn();
 				if (server->TrueBoxStatus == 0)
 					ImGui::TextUnformatted("No");
