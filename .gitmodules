@@ -8,14 +8,6 @@
 [submodule "data/lua/IntegrationTests"]
 	path = src/plugins/lua/lua/IntegrationTests
 	url = https://github.com/macroquest/integration-tests.git
-[submodule "plugins/MQ2AASpend"]
-	path = plugins/MQ2AASpend
-	url = https://github.com/RedGuides/MQ2AASpend.git
-	branch = master
-[submodule "plugins/MQ2AdvPath"]
-	path = plugins/MQ2AdvPath
-	url = https://github.com/RedGuides/MQ2AdvPath.git
-	branch = master
 [submodule "plugins/MQ2AutoAccept"]
 	path = plugins/MQ2AutoAccept
 	url = https://github.com/RedGuides/MQ2AutoAccept.git
@@ -304,10 +296,6 @@
 	path = plugins/MQ2Vendors
 	url = https://github.com/RedGuides/MQ2Vendors.git
 	branch = master
-[submodule "plugins/MQMountClassicModels"]
-	path = plugins/MQMountClassicModels
-	url = https://github.com/Knightly1/MQMountClassicModels.git
-	branch = main
 [submodule "plugins/MQ2DotNet"]
 	path = plugins/MQ2DotNet
 	url = https://github.com/projecteon/MQ2DotNet.git
@@ -316,14 +304,6 @@
 	path = plugins/MQ2Tracking
 	url = https://github.com/RedGuides/MQ2Tracking.git
 	branch = master
-[submodule "plugins/MQTextToSpeech"]
-	path = plugins/MQTextToSpeech
-	url = https://github.com/Knightly1/MQTextToSpeech.git
-	branch = main
-[submodule "plugins/MQ2MeshManager"]
-	path = plugins/MQ2MeshManager
-	url = https://github.com/wired420/MQ2MeshManager.git
-	branch = main
 [submodule "plugins/MQ2GMCheck"]
 	path = plugins/MQ2GMCheck
 	url = https://github.com/RedGuides/MQ2GMCheck.git
