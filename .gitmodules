@@ -331,3 +331,7 @@
 	path = plugins/MQ2AdvPath
 	url = https://github.com/RedGuides/MQ2AdvPath.git
 	branch = master
+[submodule "plugins/MQ2MeshManager"]
+	path = plugins/MQ2MeshManager
+	url = https://github.com/wired420/MQ2MeshManager.git
+	branch = main
