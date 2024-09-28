@@ -324,3 +324,6 @@
 	path = plugins/MQ2WinTitle
 	url = https://github.com/RedGuides/MQ2WinTitle.git
 	branch = master
+[submodule "plugins/MQ2RWarp"]
+	path = plugins/MQ2RWarp
+	url = https://github.com/TheDroidYourLookingFor/MQ2RWarp.git
