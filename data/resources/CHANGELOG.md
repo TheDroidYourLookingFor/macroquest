@@ -1,3 +1,5 @@
+Sep 27, 2024:
+- Emu: Added mq.TLO.AutoLogin.Profile.ReRun(). This should allow for an easy relogin when kicked to login/server select.
 Sep 7, 2024:
 - emu: Fix bug that kept OnBeginZone events to fire. This fix will
   resolve severael bugs, including nav not stopping when zoning.
