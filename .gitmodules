@@ -335,3 +335,23 @@
 	path = plugins/MQ2MeshManager
 	url = https://github.com/wired420/MQ2MeshManager.git
 	branch = main
+[submodule "plugins/MQ2AASpend"]
+	path = plugins/MQ2AASpend
+	url = https://github.com/RedGuides/MQ2AASpend.git
+	branch = master
+[submodule "plugins/MQ2MountClassicModels"]
+	path = plugins/MQ2MountClassicModels
+	url = https://github.com/Knightly1/MQMountClassicModels.git
+	branch = master
+[submodule "plugins/MQTextToSpeech"]
+	path = plugins/MQTextToSpeech
+	url = https://github.com/Knightly1/MQTextToSpeech.git
+	branch = main
+[submodule "plugins/MQ2Mono"]
+	path = plugins/MQ2Mono
+	url = https://github.com/RekkasGit/MQ2Mono.git
+	branch = master
+[submodule "plugins/MQMountClassicModels"]
+	path = plugins/MQMountClassicModels
+	url = https://github.com/Knightly1/MQMountClassicModels.git
+	branch = main
